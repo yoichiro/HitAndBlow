@@ -1,0 +1,60 @@
+{
+  "WELCOME": [
+    "Welcome to Bulls and Cows. It is a game that guesses all three different digits. Zero is not included. Now, please say three digit numbers.",
+    "Let's play Bulls and Cows. It is a game to guess three digit numbers which is a totally different number. Ok, please say three digit numbers."
+  ],
+  "QUIT": [
+    "The answer was %s, %s and %s. Let's play again next time.",
+    "The correct answer was %s, %s and %s. See you later."
+  ],
+  "PLAY_AGAIN_YES": "Thank you. I'm thinking new numbers. Now, please say three digit numbers.",
+  "PLAY_AGAIN_NO": [
+    "Ok, Bulls and Cows is finished. Let's play again next time.",
+    "Ok, Bulls and Cows is finished. See you again.",
+    "Ok, Bulls and Cows is finished. Please call this game again."
+  ],
+  "INPUT_UNKNOWN_PLAY_AGAIN": [
+    "I didn't understand well. Do you want to continue?",
+    "I didn't hear that. Do you want to play again?"
+  ],
+  "INPUT_UNKNOWN_GAME": [
+    "I didn't understand well. Please say three digit numbers.",
+    "I didn't hear that well. Please say three digit numbers.",
+    "What did you say? Please say three digit numbers."
+  ],
+  "3HIT": [
+    "Congratulation! You got three Bullss! Do you want to play again?",
+    "Great! You got three Bullss! Do you want to play again?",
+    "You got three Bullss! Wow! Do you want to play again?"
+  ],
+  "INVALID_NUMBER": [
+    "Please say three different numbers without zero.",
+    "Numbers are different totally, and not include zero. Please say three digit numbers."
+  ],
+  "HIT_AND_BLOW": [
+    "%s Bulls, %s Cows.",
+    "%s Bulls and %s Cows."
+  ],
+  "ALMOST": [
+    "It is a little more.",
+    "Almost.",
+    "Three Bulls is immediately there."
+  ],
+  "NOTHING": [
+    "It seems that those numbers are not included.",
+    "You will be able to forget those numbers."
+  ],
+  "HINT1": "The sum of three digit numbers is %s.",
+  "HINT2": "%s is included in three digit numbers.",
+  "RULE": "It is a game to guess three different digits. Zero is not included. If the position of the number match, it means Bulls. In the other hand, if the position is different, it means Cows. To get three Bulls, do your best!",
+  "NO_INPUT_GAME": [
+    "I didn't understand well. Please say three digit numbers.",
+    "Are you until there? Please say three digit numbers.",
+    "Over. Please call me again. Bye."
+  ],
+  "NO_INPUT_PLAY_AGAIN": [
+    "I didn't understand well. Do you want to continue?",
+    "Are you until there? Do you want to play again?",
+    "Over. Please call me again. Bye."
+  ]
+}

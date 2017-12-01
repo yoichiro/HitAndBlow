@@ -11,7 +11,9 @@
   "dependencies": {
     "actions-on-google": "^1.6.1",
     "firebase-admin": "~5.4.2",
-    "firebase-functions": "^0.7.1"
+    "firebase-functions": "^0.7.1",
+    "sprintf-js": "^1.1.1",
+    "i18n": "^0.8.3"
   },
   "private": true
 }
