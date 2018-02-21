@@ -16,6 +16,7 @@ const INPUT_UNKNOWN_GAME_ACTION = "input.unknown.game";
 const INPUT_UNKNOWN_PLAY_AGAIN_ACTION = "input.unknown.play_again";
 const HELP_RULE_ACTION = "help.rule";
 const HELP_HINT_ACTION = "help.hint";
+const UPDATE_ANSWER_ACTION = "update.answer";
 
 const GAME_CONTEXT = "game";
 const PLAY_AGAIN_CONTEXT = "play_again";
@@ -75,6 +76,15 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
     const _initializeGame = (app) => {
         const data = app.data;
         data.answer = _generateAnswer();
+        data.hint = 0;
+        data.hintIndexes = [0, 1, 2].sort(() => {
+            return Math.random() - .5;
+        });
+    };
+
+    const _initializeGameWithAnswer = (app, answer) => {
+        const data = app.data;
+        data.answer = answer;
         data.hint = 0;
         data.hintIndexes = [0, 1, 2].sort(() => {
             return Math.random() - .5;
@@ -240,6 +250,13 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
         }
     };
 
+    const updateAnswer = (app) => {
+        const number1 = app.getArgument(NUMBER1_PARAM);
+        const numbers = _parseNumbers(number1, null, null);
+        _initializeGameWithAnswer(app, [numbers.number1, numbers.number2, numbers.number3]);
+        app.ask(_i18n("UPDATE_ANSWER"), _noInputGame());
+    };
+
     let actionMap = new Map();
     actionMap.set(INPUT_WELCOME_ACTION, inputWelcome);
     actionMap.set(INPUT_NUMBERS_ACTION, inputNumbers);
@@ -250,6 +267,7 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
     actionMap.set(INPUT_UNKNOWN_PLAY_AGAIN_ACTION, inputUnknownPlayAgain);
     actionMap.set(HELP_RULE_ACTION, helpRule);
     actionMap.set(HELP_HINT_ACTION, helpHint);
+    actionMap.set(UPDATE_ANSWER_ACTION, updateAnswer)
 
     app.handleRequest(actionMap);
 });
