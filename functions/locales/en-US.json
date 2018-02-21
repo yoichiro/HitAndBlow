@@ -23,9 +23,9 @@
     "What did you say? Please say three digit numbers."
   ],
   "3HIT": [
-    "Congratulation! You got three Bullss! Do you want to play again?",
-    "Great! You got three Bullss! Do you want to play again?",
-    "You got three Bullss! Wow! Do you want to play again?"
+    "Congratulation! You got three Bulls! Do you want to play again?",
+    "Great! You got three Bulls! Do you want to play again?",
+    "You got three Bulls! Wow! Do you want to play again?"
   ],
   "INVALID_NUMBER": [
     "Please say three different numbers without zero.",
@@ -56,5 +56,6 @@
     "I didn't understand well. Do you want to continue?",
     "Are you until there? Do you want to play again?",
     "Over. Please call me again. Bye."
-  ]
+  ],
+  "UPDATE_ANSWER": "The answer updated."
 }

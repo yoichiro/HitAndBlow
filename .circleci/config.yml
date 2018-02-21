@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: ubuntu
+    steps:
+      - run:
+          name: Update apt-get
+          command: apt-get update
+      - run:
+          name: Install ca-certificates
+          command: apt-get install -y ca-certificates
+      - checkout
+      - run:
+          name: dialogflow-query-checker
+          command: |
+            mkdir -p ~/repo/dialogflow-query-checker
+            bin/dialogflow-query-checker run -o ~/repo/dialogflow-query-checker/test_result.xml hitandblow_test.yml
+      - store_test_results:
+          path: ~/repo
+      - store_artifacts:
+          path: ~/repo
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - test
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - test
