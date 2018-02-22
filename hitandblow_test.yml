@@ -322,6 +322,7 @@ tests:
         - "Ok, Bulls and Cows is finished\\. Let's play again next time\\."
         - "Ok, Bulls and Cows is finished\\. See you again\\."
         - "Ok, Bulls and Cows is finished\\. Please call this game again\\."
+      endConversation: true
 
   # [en] Welcome Message
   -
@@ -363,6 +364,7 @@ tests:
       speeches:
         - "The answer was 1, 2 and 3. Let's play again next time\\."
         - "The correct answer was 1, 2 and 3. See you later\\."
+      endConversation: true
 
   # [ja] Welcome Message
   -
@@ -675,6 +677,7 @@ tests:
         - "イートアンドバイトを終わります。また遊びましょう。"
         - "イートアンドバイトを終わります。またお会いしましょう。"
         - "イートアンドバイトを終わります。また呼んでくださいね。"
+      endConversation: true
 
   # [ja] Welcome Message
   -
@@ -716,3 +719,4 @@ tests:
       speeches:
         - "答えは、1、2、3、でした。また遊びましょう。"
         - "正解は、1、2、3、でした。またお会いしましょう。"
+      endConversation: true
