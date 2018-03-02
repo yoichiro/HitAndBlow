@@ -40,6 +40,8 @@ tests:
       intentName: "update_answer - context: game"
       contexts:
         - game
+      parameters:
+        number1: 123
       speeches:
         - "The answer updated\\."
 
@@ -144,6 +146,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 456
       speeches:
         - "0 Bulls, 0 Cows\\.It seems that those numbers are not included\\."
         - "0 Bulls and 0 Cows\\.It seems that those numbers are not included\\."
@@ -159,6 +163,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 156
       speeches:
         - "1 Bulls, 0 Cows\\."
         - "1 Bulls and 0 Cows\\."
@@ -172,6 +178,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 516
       speeches:
         - "0 Bulls, 1 Cows\\."
         - "0 Bulls and 1 Cows\\."
@@ -185,6 +193,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 126
       speeches:
         - "2 Bulls, 0 Cows\\."
         - "2 Bulls and 0 Cows\\."
@@ -198,6 +208,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 152
       speeches:
         - "1 Bulls, 1 Cows\\."
         - "1 Bulls and 1 Cows\\."
@@ -211,6 +223,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 312
       speeches:
         - "0 Bulls, 3 Cows\\.It is a little more\\."
         - "0 Bulls and 3 Cows\\.It is a little more\\."
@@ -228,6 +242,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 132
       speeches:
         - "1 Bulls, 2 Cows\\.It is a little more\\."
         - "1 Bulls and 2 Cows\\.It is a little more\\."
@@ -245,6 +261,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - play_again
+      parameters:
+        number1: 123
       speeches:
         - "Congratulation! You got three Bulls! Do you want to play again\\?"
         - "Great! You got three Bulls! Do you want to play again\\?"
@@ -287,6 +305,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - play_again
+      parameters:
+        number1: 123
       speeches:
         - "Congratulation! You got three Bulls! Do you want to play again\\?"
         - "Great! You got three Bulls! Do you want to play again\\?"
@@ -511,6 +531,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 456
       speeches:
         - "0イート0バイトです。これらの数字は含まれていないようですね。"
         - "0イート0バイトです。これらの数字は忘れて良さそうです。"
@@ -524,6 +546,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 156
       speeches:
         - "1イート0バイトです。"
   -
@@ -536,6 +560,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 516
       speeches:
         - "0イート1バイトです。"
   -
@@ -548,6 +574,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 126
       speeches:
         - "2イート0バイトです。"
   -
@@ -560,6 +588,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 152
       speeches:
         - "1イート1バイトです。"
   -
@@ -572,6 +602,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 312
       speeches:
         - "0イート3バイトです。もう少しです。"
         - "0イート3バイトです。あとちょっとです。"
@@ -586,6 +618,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - game
+      parameters:
+        number1: 132
       speeches:
         - "1イート2バイトです。もう少しです。"
         - "1イート2バイトです。あとちょっとです。"
@@ -600,6 +634,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - play_again
+      parameters:
+        number1: 123
       speeches:
         - "おめでとうございます！3イートです！もう一度遊びますか？"
         - "すばらしい！3イートです！もう一度遊びますか？"
@@ -642,6 +678,8 @@ tests:
       intentName: "input_numbers - context: game"
       contexts:
         - play_again
+      parameters:
+        number1: 123
       speeches:
         - "おめでとうございます！3イートです！もう一度遊びますか？"
         - "すばらしい！3イートです！もう一度遊びますか？"
