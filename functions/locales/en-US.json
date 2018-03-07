@@ -57,5 +57,15 @@
     "Are you until there? Do you want to play again?",
     "Over. Please call me again. Bye."
   ],
-  "UPDATE_ANSWER": "The answer updated."
+  "UPDATE_ANSWER": "The answer updated.",
+  "SUGGEST_HINT": [
+    "Do you need a hint?",
+    "Can I provide you a hint?",
+    "Do you want to hear a hint?"
+  ],
+  "HEAR_HINT_NO": [
+    "I see. Please say three digit numbers.",
+    "We continue. Please say three digit numbers.",
+    "Ok, please say three digit numbers."
+  ]
 }
