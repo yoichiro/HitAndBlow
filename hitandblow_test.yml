@@ -157,51 +157,6 @@ tests:
     condition:
       contexts:
         - game
-      query: 156
-    expect:
-      action: input.numbers
-      intentName: "input_numbers - context: game"
-      contexts:
-        - game
-      parameters:
-        number1: 156
-      speeches:
-        - "1 Bulls, 0 Cows\\."
-        - "1 Bulls and 0 Cows\\."
-  -
-    condition:
-      contexts:
-        - game
-      query: 516
-    expect:
-      action: input.numbers
-      intentName: "input_numbers - context: game"
-      contexts:
-        - game
-      parameters:
-        number1: 516
-      speeches:
-        - "0 Bulls, 1 Cows\\."
-        - "0 Bulls and 1 Cows\\."
-  -
-    condition:
-      contexts:
-        - game
-      query: 126
-    expect:
-      action: input.numbers
-      intentName: "input_numbers - context: game"
-      contexts:
-        - game
-      parameters:
-        number1: 126
-      speeches:
-        - "2 Bulls, 0 Cows\\."
-        - "2 Bulls and 0 Cows\\."
-  -
-    condition:
-      contexts:
-        - game
       query: 152
     expect:
       action: input.numbers
@@ -386,6 +341,287 @@ tests:
         - "The correct answer was 1, 2 and 3. See you later\\."
       endConversation: true
 
+  # [en] Welcome Message
+  -
+    condition:
+      eventName: GOOGLE_ASSISTANT_WELCOME
+      sessionId: new
+    expect:
+      action: input.welcome
+      intentName: input_welcome
+      contexts:
+        - game
+      speeches:
+        - "Welcome to Bulls and Cows\\. It is a game that guesses all three different digits\\. Zero is not included\\. Now, please say three digit numbers\\."
+        - "Let's play Bulls and Cows\\. It is a game to guess three digit numbers which is a totally different number\\. Ok, please say three digit numbers\\."
+
+  # [en] Update Answer, and say the answer right now
+  -
+    condition:
+      contexts:
+        - game
+      query: "Update the answer to 123"
+    expect:
+      action: update.answer
+      intentName: "update_answer - context: game"
+      contexts:
+        - game
+      speeches:
+        - "The answer updated\\."
+
+  # [en] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls, 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls, 1 Cows\\.Do you want to hear a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls and 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you want to hear a hint\\?"
+
+  # [en] Answer Yes for hint suggestion
+  -
+      condition:
+        contexts:
+          - hear_hint
+        query: Yes
+      expect:
+        action: hear_hint.yes
+        intentName: "hear_hint_yes - context: hear_hint"
+        contexts:
+          - game
+        speeches:
+          - "The sum of three digit numbers is 6\\."
+
+  # [en] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls, 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls, 1 Cows\\.Do you want to hear a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls and 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you want to hear a hint\\?"
+
+  # [en] Answer No for hint suggestion
+  -
+      condition:
+        contexts:
+          - hear_hint
+        query: No
+      expect:
+        action: hear_hint.no
+        intentName: "hear_hint_no - context: hear_hint"
+        contexts:
+          - game
+        speeches:
+          - "I see\\. Please say three digit numbers\\."
+          - "We continue\\. Please say three digit numbers\\."
+          - "Ok, please say three digit numbers\\."
+
+  # [en] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls, 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls, 1 Cows\\.Do you want to hear a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls and 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you want to hear a hint\\?"
+
+  # [en] Answer Number for hint suggestion
+  -
+    condition:
+      contexts:
+        - hear_hint
+      query: 152
+    expect:
+      action: hear_hint.numbers
+      intentName: "hear_hint_numbers - context: hear_hint"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+
+  # [en] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\."
+        - "1 Bulls and 1 Cows\\."
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1 Bulls, 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls, 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls, 1 Cows\\.Do you want to hear a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you need a hint\\?"
+        - "1 Bulls and 1 Cows\\.Can I provide you a hint\\?"
+        - "1 Bulls and 1 Cows\\.Do you want to hear a hint\\?"
+
+  # [en] Answer evil for hint suggestion
+  -
+    condition:
+      contexts:
+        - hear_hint
+      query: Evil
+    expect:
+      action: hear_hint.unknown
+      intentName: "hear_hint_unknown - context: hear_hint"
+      contexts:
+        - game
+      speeches:
+        - "I didn't understand well\\. Please say three digit numbers\\."
+        - "I didn't hear that well\\. Please say three digit numbers\\."
+        - "What did you say\\? Please say three digit numbers\\."
+
+
   # [ja] Welcome Message
   -
     condition:
@@ -518,7 +754,7 @@ tests:
       speeches:
         - "よくわかりませんでした。3桁の数字を言ってください。"
         - "よく聞き取れませんでした。3桁の数字をどうぞ。"
-        - "何と言ったのでしょうか？3桁の数字でお願いいたします。"
+        - "何と言ったのでしょうか？3桁の数字をお願いいたします。"
 
   # [ja] Input numbers
   -
@@ -536,48 +772,6 @@ tests:
       speeches:
         - "0イート0バイトです。これらの数字は含まれていないようですね。"
         - "0イート0バイトです。これらの数字は忘れて良さそうです。"
-  -
-    condition:
-      contexts:
-        - game
-      query: 156
-    expect:
-      action: input.numbers
-      intentName: "input_numbers - context: game"
-      contexts:
-        - game
-      parameters:
-        number1: 156
-      speeches:
-        - "1イート0バイトです。"
-  -
-    condition:
-      contexts:
-        - game
-      query: 516
-    expect:
-      action: input.numbers
-      intentName: "input_numbers - context: game"
-      contexts:
-        - game
-      parameters:
-        number1: 516
-      speeches:
-        - "0イート1バイトです。"
-  -
-    condition:
-      contexts:
-        - game
-      query: 126
-    expect:
-      action: input.numbers
-      intentName: "input_numbers - context: game"
-      contexts:
-        - game
-      parameters:
-        number1: 126
-      speeches:
-        - "2イート0バイトです。"
   -
     condition:
       contexts:
@@ -758,3 +952,265 @@ tests:
         - "答えは、1、2、3、でした。また遊びましょう。"
         - "正解は、1、2、3、でした。またお会いしましょう。"
       endConversation: true
+
+  # [ja] Welcome Message
+  -
+    condition:
+      eventName: GOOGLE_ASSISTANT_WELCOME
+      sessionId: new
+    expect:
+      action: input.welcome
+      intentName: input_welcome
+      contexts:
+        - game
+      speeches:
+        - "イートアンドバイトへようこそ。全て異なる3桁の数字を当てるゲームです。0は含みません。では、3桁の数字を言ってください。"
+        - "イートアンドバイトへようこそ。3桁の数字を当てるゲームです。0は含まず、全て異なる数字です。さっそく、3桁の数字を言ってください。"
+
+  # [ja] Update Answer, and say the answer right now
+  -
+    condition:
+      contexts:
+        - game
+      query: "正解を123で更新します"
+    expect:
+      action: update.answer
+      intentName: "update_answer - context: game"
+      contexts:
+        - game
+      speeches:
+        - "正解を更新しました。"
+
+  # [ja] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。ヒントを差し上げましょうか？"
+        - "1イート1バイトです。ヒントは必要ですか？"
+        - "1イート1バイトです。ヒントを聞きたいですか？"
+
+  # [ja] Answer Yes for hint suggestion
+  -
+      condition:
+        contexts:
+          - hear_hint
+        query: "はい"
+      expect:
+        action: hear_hint.yes
+        intentName: "hear_hint_yes - context: hear_hint"
+        contexts:
+          - game
+        speeches:
+          - "3桁の数字の合計は、6です。"
+
+  # [ja] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。ヒントを差し上げましょうか？"
+        - "1イート1バイトです。ヒントは必要ですか？"
+        - "1イート1バイトです。ヒントを聞きたいですか？"
+
+  # [ja] Answer No for hint suggestion
+  -
+      condition:
+        contexts:
+          - hear_hint
+        query: "いいえ"
+      expect:
+        action: hear_hint.no
+        intentName: "hear_hint_no - context: hear_hint"
+        contexts:
+          - game
+        speeches:
+          - "わかりました。3桁の数字をどうぞ。"
+          - "続けましょう。3桁の数字を言ってください。"
+          - "はい。3桁の数字をお願いします。"
+
+  # [ja] Draw a blank three times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。ヒントを差し上げましょうか？"
+        - "1イート1バイトです。ヒントは必要ですか？"
+        - "1イート1バイトです。ヒントを聞きたいですか？"
+
+  # [ja] Answer Number for hint suggestion
+  -
+    condition:
+      contexts:
+        - hear_hint
+      query: 152
+    expect:
+      action: hear_hint.numbers
+      intentName: "hear_hint_numbers - context: hear_hint"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+        - "1イート1バイトです。"
+        - "1イート1バイトです。"
+
+  # [ja] Draw a blank two times
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - game
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。"
+  -
+    condition:
+      contexts:
+        - game
+      query: 152
+    expect:
+      action: input.numbers
+      intentName: "input_numbers - context: game"
+      contexts:
+        - hear_hint
+      parameters:
+        number1: 152
+      speeches:
+        - "1イート1バイトです。ヒントを差し上げましょうか？"
+        - "1イート1バイトです。ヒントは必要ですか？"
+        - "1イート1バイトです。ヒントを聞きたいですか？"
+
+  # [ja] Answer evil for hint suggestion
+  -
+    condition:
+      contexts:
+        - hear_hint
+      query: "悪魔"
+    expect:
+      action: hear_hint.unknown
+      intentName: "hear_hint_unknown - context: hear_hint"
+      contexts:
+        - game
+      speeches:
+        - "よくわかりませんでした。3桁の数字を言ってください。"
+        - "よく聞き取れませんでした。3桁の数字をどうぞ。"
+        - "何と言ったのでしょうか？3桁の数字をお願いいたします。"

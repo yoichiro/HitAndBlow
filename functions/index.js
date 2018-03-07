@@ -17,9 +17,14 @@ const INPUT_UNKNOWN_PLAY_AGAIN_ACTION = "input.unknown.play_again";
 const HELP_RULE_ACTION = "help.rule";
 const HELP_HINT_ACTION = "help.hint";
 const UPDATE_ANSWER_ACTION = "update.answer";
+const HEAR_HINT_YES_ACTION = "hear_hint.yes";
+const HEAR_HINT_NO_ACTION = "hear_hint.no";
+const HEAR_HINT_NUMBERS_ACTION = "hear_hint.numbers";
+const HEAR_HINT_UNKNOWN_ACTION = "hear_hint.unknown";
 
 const GAME_CONTEXT = "game";
 const PLAY_AGAIN_CONTEXT = "play_again";
+const HEAR_HINT_CONTEXT = "hear_hint";
 
 const NUMBER1_PARAM = "number1";
 const NUMBER2_PARAM = "number2";
@@ -73,22 +78,24 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
         return result;
     };
 
-    const _initializeGame = (app) => {
-        const data = app.data;
-        data.answer = _generateAnswer();
+    const _clearHint = (data) => {
         data.hint = 0;
         data.hintIndexes = [0, 1, 2].sort(() => {
             return Math.random() - .5;
         });
+        data.mistakeCountForHint = 0;
+    };
+
+    const _initializeGame = (app) => {
+        const data = app.data;
+        data.answer = _generateAnswer();
+        _clearHint(data);
     };
 
     const _initializeGameWithAnswer = (app, answer) => {
         const data = app.data;
         data.answer = answer;
-        data.hint = 0;
-        data.hintIndexes = [0, 1, 2].sort(() => {
-            return Math.random() - .5;
-        });
+        _clearHint(data);
     };
 
     const _addUniqueNumber = (result) => {
@@ -196,12 +203,29 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
                 let hitAndBlow = _i18n("HIT_AND_BLOW", result.hit, result.blow);
                 if (result.hit + result.blow === 3) {
                     hitAndBlow += _i18n("ALMOST");
+                    app.setContext(GAME_CONTEXT);
+                    app.ask(hitAndBlow, _noInputGame());
                 } else if (result.hit + result.blow === 0) {
                     hitAndBlow += _i18n("NOTHING");
+                    app.setContext(GAME_CONTEXT);
+                    app.ask(hitAndBlow, _noInputGame());
+                } else {
+                    let mistakeCountForHint = data.mistakeCountForHint + 1;
+                    data.mistakeCountForHint = mistakeCountForHint;
+                    console.log("mistakeCountForHint", mistakeCountForHint);
+                    if (mistakeCountForHint % 3 === 0) {
+                        hitAndBlow += _i18n("SUGGEST_HINT");
+                        app.setContext(GAME_CONTEXT, 0);
+                        app.setContext(HEAR_HINT_CONTEXT);
+                        app.ask(hitAndBlow, _noInputGame());
+                    } else {
+                        app.setContext(GAME_CONTEXT);
+                        app.ask(hitAndBlow, _noInputGame());
+                    }
                 }
-                app.ask(hitAndBlow, _noInputGame());
             }
         } else {
+            app.setContext(GAME_CONTEXT);
             app.ask(_i18n("INVALID_NUMBER"), _noInputGame());
         }
     };
@@ -248,6 +272,7 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
             const n = answer[hintIndexes[hint - 1]];
             app.ask(_i18n("HINT2", n), _noInputGame());
         }
+        app.setContext(HEAR_HINT_CONTEXT, 0);
     };
 
     const updateAnswer = (app) => {
@@ -255,6 +280,16 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
         const numbers = _parseNumbers(number1, null, null);
         _initializeGameWithAnswer(app, [numbers.number1, numbers.number2, numbers.number3]);
         app.ask(_i18n("UPDATE_ANSWER"), _noInputGame());
+    };
+
+    const hearHintNo = (app) => {
+        app.setContext(HEAR_HINT_CONTEXT, 0);
+        app.ask(_i18n("HEAR_HINT_NO"), _noInputGame());
+    };
+
+    const hearHintUnknown = (app) => {
+        app.setContext(HEAR_HINT_CONTEXT, 0);
+        app.ask(_i18n("INPUT_UNKNOWN_GAME"), _noInputGame());
     };
 
     let actionMap = new Map();
@@ -267,7 +302,11 @@ exports.hitAndBlow = functions.https.onRequest((request, response) => {
     actionMap.set(INPUT_UNKNOWN_PLAY_AGAIN_ACTION, inputUnknownPlayAgain);
     actionMap.set(HELP_RULE_ACTION, helpRule);
     actionMap.set(HELP_HINT_ACTION, helpHint);
-    actionMap.set(UPDATE_ANSWER_ACTION, updateAnswer)
+    actionMap.set(UPDATE_ANSWER_ACTION, updateAnswer);
+    actionMap.set(HEAR_HINT_YES_ACTION, helpHint);
+    actionMap.set(HEAR_HINT_NO_ACTION, hearHintNo);
+    actionMap.set(HEAR_HINT_NUMBERS_ACTION, inputNumbers);
+    actionMap.set(HEAR_HINT_UNKNOWN_ACTION, hearHintUnknown);
 
     app.handleRequest(actionMap);
 });
