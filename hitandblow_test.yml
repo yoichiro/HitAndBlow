@@ -657,7 +657,7 @@ tests:
     condition:
       contexts:
         - game
-      query: "正解を123で更新します"
+      query: "正解を、123で更新します"
     expect:
       action: update.answer
       intentName: "update_answer - context: game"
@@ -854,7 +854,7 @@ tests:
     condition:
       contexts:
         - game
-      query: "正解を123で更新します"
+      query: "正解を、123で更新します"
     expect:
       action: update.answer
       intentName: "update_answer - context: game"
@@ -930,7 +930,7 @@ tests:
     condition:
       contexts:
         - game
-      query: "正解を123で更新します"
+      query: "正解を、123で更新します"
     expect:
       action: update.answer
       intentName: "update_answer - context: game"
@@ -972,7 +972,7 @@ tests:
     condition:
       contexts:
         - game
-      query: "正解を123で更新します"
+      query: "正解を、123で更新します"
     expect:
       action: update.answer
       intentName: "update_answer - context: game"
