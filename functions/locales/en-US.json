@@ -49,13 +49,11 @@
   "RULE": "It is a game to guess three different digits. Zero is not included. If the position of the number match, it means Bulls. In the other hand, if the position is different, it means Cows. To get three Bulls, do your best!",
   "NO_INPUT_GAME": [
     "I didn't understand well. Please say three digit numbers.",
-    "Are you until there? Please say three digit numbers.",
-    "Over. Please call me again. Bye."
+    "Are you until there? Please say three digit numbers."
   ],
   "NO_INPUT_PLAY_AGAIN": [
     "I didn't understand well. Do you want to continue?",
-    "Are you until there? Do you want to play again?",
-    "Over. Please call me again. Bye."
+    "Are you until there? Do you want to play again?"
   ],
   "UPDATE_ANSWER": "The answer updated.",
   "SUGGEST_HINT": [
