@@ -1,312 +1,300 @@
 "use strict";
 
-process.env.DEBUG = "actions-on-google:*";
-
-const App = require("actions-on-google").DialogflowApp;
+const { dialogflow } = require("actions-on-google");
 const functions = require("firebase-functions");
 const i18n = require("i18n");
 const { sprintf } = require('sprintf-js');
-
-const INPUT_WELCOME_ACTION = "input.welcome";
-const INPUT_NUMBERS_ACTION = "input.numbers";
-const QUIT_ACTION = "quit";
-const PLAY_AGAIN_YES_ACTION = "play_again.yes";
-const PLAY_AGAIN_NO_ACTION = "play_again.no";
-const INPUT_UNKNOWN_GAME_ACTION = "input.unknown.game";
-const INPUT_UNKNOWN_PLAY_AGAIN_ACTION = "input.unknown.play_again";
-const HELP_RULE_ACTION = "help.rule";
-const HELP_HINT_ACTION = "help.hint";
-const UPDATE_ANSWER_ACTION = "update.answer";
-const HEAR_HINT_YES_ACTION = "hear_hint.yes";
-const HEAR_HINT_NO_ACTION = "hear_hint.no";
-const HEAR_HINT_NUMBERS_ACTION = "hear_hint.numbers";
-const HEAR_HINT_UNKNOWN_ACTION = "hear_hint.unknown";
 
 const GAME_CONTEXT = "game";
 const PLAY_AGAIN_CONTEXT = "play_again";
 const HEAR_HINT_CONTEXT = "hear_hint";
 
-const NUMBER1_PARAM = "number1";
-const NUMBER2_PARAM = "number2";
-const NUMBER3_PARAM = "number3";
+const app = dialogflow({ debug: true });
 
-exports.hitAndBlow = functions.https.onRequest((request, response) => {
-    const app = new App({request, response});
+i18n.configure({
+    locales: ["en-US", "ja-JP"],
+    directory: __dirname + "/locales",
+    defaultLocale: "en-US"
+});
 
-    console.log("Request headers: " + JSON.stringify(request.headers));
-    console.log("Request body: " + JSON.stringify(request.body));
-    console.log("app.getUserLocale(): " + app.getUserLocale());
+const _setupLocale = conv => {
+    i18n.setLocale(conv.user.locale);
+};
 
-    i18n.configure({
-        locales: ["en-US", "ja-JP"],
-        directory: __dirname + "/locales",
-        defaultLocale: "en-US"
+const _sprintf = (message, params) => {
+    if (params.length > 0) {
+        return sprintf(message, ...params);
+    } else {
+        return message;
+    }
+};
+
+const _i18n = (name, ...params) => {
+    const message = i18n.__(name);
+    if (Array.isArray(message)) {
+        return _sprintf(message[Math.floor(Math.random() * message.length)], params);
+    } else {
+        return _sprintf(message, params);
+    }
+};
+
+const _initializeGame = (conv) => {
+    const data = conv.data;
+    data.answer = _generateAnswer();
+    _clearHint(data);
+};
+
+const _generateAnswer = () => {
+    const result = [];
+    _addUniqueNumber(result);
+    _addUniqueNumber(result);
+    _addUniqueNumber(result);
+    return result;
+};
+
+const _addUniqueNumber = (result) => {
+    let number = -1;
+    do {
+        number = Math.floor(Math.random() * 9) + 1;
+    } while(result.includes(number));
+    result.push(number);
+};
+
+const _clearHint = (data) => {
+    data.hint = 0;
+    data.hintIndexes = [0, 1, 2].sort(() => {
+        return Math.random() - .5;
     });
+    data.mistakeCountForHint = 0;
+};
 
-    i18n.setLocale(app.getUserLocale());
-
-    const _sprintf = (message, params) => {
-        if (params.length > 0) {
-            return sprintf(message, ...params);
-        } else {
-            return message;
-        }
-    };
-
-    const _i18n = (name, ...params) => {
-        const message = i18n.__(name);
-        if (Array.isArray(message)) {
-            return _sprintf(message[Math.floor(Math.random() * message.length)], params);
-        } else {
-            return _sprintf(message, params);
-        }
-    };
-
-    const _noInputGame = () => {
-        return i18n.__("NO_INPUT_GAME");
-    };
-
-    const _noInputPlayAgain = () => {
-        return i18n.__("NO_INPUT_PLAY_AGAIN");
-    };
-
-    const _generateAnswer = () => {
-        const result = [];
-        _addUniqueNumber(result);
-        _addUniqueNumber(result);
-        _addUniqueNumber(result);
-        return result;
-    };
-
-    const _clearHint = (data) => {
-        data.hint = 0;
-        data.hintIndexes = [0, 1, 2].sort(() => {
-            return Math.random() - .5;
-        });
-        data.mistakeCountForHint = 0;
-    };
-
-    const _initializeGame = (app) => {
-        const data = app.data;
-        data.answer = _generateAnswer();
-        _clearHint(data);
-    };
-
-    const _initializeGameWithAnswer = (app, answer) => {
-        const data = app.data;
-        data.answer = answer;
-        _clearHint(data);
-    };
-
-    const _addUniqueNumber = (result) => {
-        let number = -1;
-        do {
-            number = Math.floor(Math.random() * 9) + 1;
-        } while(result.includes(number));
-        result.push(number);
-    };
-
-    const inputWelcome = (app) => {
-        _initializeGame(app);
-        app.ask(_i18n("WELCOME"), _noInputGame());
-    };
-
-    const _validateNumber = (n) => {
-        return 1 <= n && n <= 9;
-    };
-
-    const _isNotSame = (n1, n2) => {
-        return n1 !== n2;
-    };
-
-    const _isNotSameAll = (n1, n2, n3) => {
-        return _isNotSame(n1, n2) && _isNotSame(n2, n3) && _isNotSame(n1, n3);
-    };
-
-    const _validateNumbers = (n1, n2, n3) => {
-        if (_validateNumber(n1) && _validateNumber(n2) && _validateNumber(n3) && _isNotSameAll(n1, n2, n3)) {
-            return {
-                result: true,
-                number1: n1,
-                number2: n2,
-                number3: n3
+const _parseNumbers = (n1, n2, n3) => {
+    console.log("number types", typeof n1, typeof n2, typeof n3);
+    console.log("number null?", n1 !== null, n2 !== null, n3 != null);
+    if (n1 !== null && n2 !== null && n3 !== null) {
+        return _validateNumbers(Number(n1), Number(n2), Number(n3));
+    } else if (n1 !== null && n2 === null && n3 === null) {
+        if (123 <= Number(n1) && Number(n1) <= 987) {
+            const n = String(n1);
+            if (n.length === 2) {
+                n1 = 0;
+            } else {
+                n1 = Number(n.charAt(0));
             }
+            n2 = Number(n.charAt(1));
+            n3 = Number(n.charAt(2));
+            return _validateNumbers(n1, n2, n3);
         } else {
             return {
                 result: false
-            }
+            };
         }
-    };
-
-    const _parseNumbers = (n1, n2, n3) => {
-        if (n1 !== null && n2 !== null && n3 !== null) {
-            return _validateNumbers(Number(n1), Number(n2), Number(n3));
-        } else if (n1 !== null && n2 === null && n3 === null) {
-            if (123 <= Number(n1) && Number(n1) <= 987) {
-                const n = String(n1);
-                if (n.length === 2) {
-                    n1 = 0;
-                } else {
-                    n1 = Number(n.charAt(0));
-                }
-                n2 = Number(n.charAt(1));
-                n3 = Number(n.charAt(2));
-                return _validateNumbers(n1, n2, n3);
-            } else {
-                return {
-                    result: false
-                };
-            }
-        }
-    };
-
-    const _judgeNumbers = (answer, numbers) => {
-        let hit = 0;
-        let blow = 0;
-
-        if (answer[0] === numbers.number1) {
-            hit++;
-        } else if (answer.indexOf(numbers.number1) !== -1) {
-            blow++;
-        }
-        if (answer[1] === numbers.number2) {
-            hit++;
-        } else if (answer.indexOf(numbers.number2) !== -1) {
-            blow++;
-        }
-        if (answer[2] === numbers.number3) {
-            hit++;
-        } else if (answer.indexOf(numbers.number3) !== -1) {
-            blow++;
-        }
+    } else {
         return {
-            hit: hit,
-            blow: blow
+            result: false
         };
-    };
+    }
+};
 
-    const inputNumbers = (app) => {
-        const data = app.data;
-        const answer = data.answer;
-        const number1 = app.getArgument(NUMBER1_PARAM);
-        const number2 = app.getArgument(NUMBER2_PARAM);
-        const number3 = app.getArgument(NUMBER3_PARAM);
-        const numbers = _parseNumbers(number1, number2, number3);
-        console.log("answer: " + answer);
-        if (numbers.result) {
-            const result = _judgeNumbers(answer, numbers);
-            if (result.hit === 3) {
-                app.setContext(PLAY_AGAIN_CONTEXT);
-                app.setContext(GAME_CONTEXT, 0);
-                app.ask(_i18n("3HIT"), _noInputPlayAgain());
+const _validateNumbers = (n1, n2, n3) => {
+    if (_validateNumber(n1) && _validateNumber(n2) && _validateNumber(n3) && _isNotSameAll(n1, n2, n3)) {
+        return {
+            result: true,
+            number1: n1,
+            number2: n2,
+            number3: n3
+        }
+    } else {
+        return {
+            result: false
+        }
+    }
+};
+
+const _validateNumber = (n) => {
+    return 1 <= n && n <= 9;
+};
+
+const _isNotSame = (n1, n2) => {
+    return n1 !== n2;
+};
+
+const _isNotSameAll = (n1, n2, n3) => {
+    return _isNotSame(n1, n2) && _isNotSame(n2, n3) && _isNotSame(n1, n3);
+};
+
+const _judgeNumbers = (answer, numbers) => {
+    let hit = 0;
+    let blow = 0;
+
+    if (answer[0] === numbers.number1) {
+        hit++;
+    } else if (answer.indexOf(numbers.number1) !== -1) {
+        blow++;
+    }
+    if (answer[1] === numbers.number2) {
+        hit++;
+    } else if (answer.indexOf(numbers.number2) !== -1) {
+        blow++;
+    }
+    if (answer[2] === numbers.number3) {
+        hit++;
+    } else if (answer.indexOf(numbers.number3) !== -1) {
+        blow++;
+    }
+    return {
+        hit: hit,
+        blow: blow
+    };
+};
+
+const _initializeGameWithAnswer = (conv, answer) => {
+    const data = conv.data;
+    data.answer = answer;
+    _clearHint(data);
+};
+
+const _noInputGame = () => {
+    return i18n.__("NO_INPUT_GAME");
+};
+
+const _noInputPlayAgain = () => {
+    return i18n.__("NO_INPUT_PLAY_AGAIN");
+};
+
+const _treatNumber = n => {
+    if (n == null) {
+        return null;
+    } else if (typeof n === "string") {
+        if (n.length > 0) {
+            return n;
+        } else {
+            return null;
+        }
+    } else {
+        return n;
+    }
+};
+
+app.intent("input_welcome", conv => {
+    _setupLocale(conv);
+    _initializeGame(conv);
+    conv.ask(_i18n("WELCOME"));
+});
+
+app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_hint"], (conv, { number1, number2, number3 }) => {
+    _setupLocale(conv);
+    const data = conv.data;
+    const answer = data.answer;
+    const numbers = _parseNumbers(_treatNumber(number1), _treatNumber(number2), _treatNumber(number3));
+    console.log("input numbers", number1, number2, number3);
+    console.log("answer", answer, "challenge", numbers);
+    if (numbers.result) {
+        const result = _judgeNumbers(answer, numbers);
+        if (result.hit === 3) {
+            conv.contexts.set(PLAY_AGAIN_CONTEXT, 1);
+            conv.contexts.delete(GAME_CONTEXT);
+            conv.ask(_i18n("3HIT"));
+        } else {
+            let hitAndBlow = _i18n("HIT_AND_BLOW", result.hit, result.blow);
+            if (result.hit + result.blow === 3) {
+                hitAndBlow += _i18n("ALMOST");
+                conv.contexts.set(GAME_CONTEXT, 1);
+                conv.ask(hitAndBlow);
+            } else if (result.hit + result.blow === 0) {
+                hitAndBlow += _i18n("NOTHING");
+                conv.contexts.set(GAME_CONTEXT, 1);
+                conv.ask(hitAndBlow);
             } else {
-                let hitAndBlow = _i18n("HIT_AND_BLOW", result.hit, result.blow);
-                if (result.hit + result.blow === 3) {
-                    hitAndBlow += _i18n("ALMOST");
-                    app.setContext(GAME_CONTEXT);
-                    app.ask(hitAndBlow, _noInputGame());
-                } else if (result.hit + result.blow === 0) {
-                    hitAndBlow += _i18n("NOTHING");
-                    app.setContext(GAME_CONTEXT);
-                    app.ask(hitAndBlow, _noInputGame());
+                let mistakeCountForHint = data.mistakeCountForHint + 1;
+                data.mistakeCountForHint = mistakeCountForHint;
+                console.log("mistakeCountForHint", mistakeCountForHint);
+                if (mistakeCountForHint % 3 === 0) {
+                    hitAndBlow += _i18n("SUGGEST_HINT");
+                    conv.contexts.delete(GAME_CONTEXT);
+                    conv.contexts.set(HEAR_HINT_CONTEXT, 1);
+                    conv.ask(hitAndBlow);
                 } else {
-                    let mistakeCountForHint = data.mistakeCountForHint + 1;
-                    data.mistakeCountForHint = mistakeCountForHint;
-                    console.log("mistakeCountForHint", mistakeCountForHint);
-                    if (mistakeCountForHint % 3 === 0) {
-                        hitAndBlow += _i18n("SUGGEST_HINT");
-                        app.setContext(GAME_CONTEXT, 0);
-                        app.setContext(HEAR_HINT_CONTEXT);
-                        app.ask(hitAndBlow, _noInputGame());
-                    } else {
-                        app.setContext(GAME_CONTEXT);
-                        app.ask(hitAndBlow, _noInputGame());
-                    }
+                    conv.contexts.set(GAME_CONTEXT, 1);
+                    conv.ask(hitAndBlow);
                 }
             }
-        } else {
-            app.setContext(GAME_CONTEXT);
-            app.ask(_i18n("INVALID_NUMBER"), _noInputGame());
         }
-    };
-
-    const playAgainYes = (app) => {
-        _initializeGame(app);
-        app.ask(_i18n("PLAY_AGAIN_YES"), _noInputGame());
-    };
-
-    const playAgainNo = (app) => {
-        app.tell(_i18n("PLAY_AGAIN_NO"));
-    };
-
-    const quit = (app) => {
-        const answer = app.data.answer;
-        app.tell(_i18n("QUIT", ...answer));
-    };
-
-    const inputUnknownGame = (app) => {
-        app.ask(_i18n("INPUT_UNKNOWN_GAME"), _noInputGame());
-    };
-
-    const inputUnknownPlayAgain = (app) => {
-        app.ask(_i18n("INPUT_UNKNOWN_PLAY_AGAIN"), _noInputPlayAgain());
-    };
-
-    const helpRule = (app) => {
-        app.ask(_i18n("RULE"), _noInputGame());
-    };
-
-    const helpHint = (app) => {
-        const data = app.data;
-        const answer = data.answer;
-        const hint = data.hint;
-        data.hint = hint + 1;
-        if (4 <= data.hint) {
-            data.hint = 0;
-        }
-        if (hint === 0) {
-            const sum = answer[0] + answer[1] + answer[2];
-            app.ask(_i18n("HINT1", sum), _noInputGame());
-        } else {
-            const hintIndexes = data.hintIndexes;
-            const n = answer[hintIndexes[hint - 1]];
-            app.ask(_i18n("HINT2", n), _noInputGame());
-        }
-        app.setContext(HEAR_HINT_CONTEXT, 0);
-    };
-
-    const updateAnswer = (app) => {
-        const number1 = app.getArgument(NUMBER1_PARAM);
-        const numbers = _parseNumbers(number1, null, null);
-        _initializeGameWithAnswer(app, [numbers.number1, numbers.number2, numbers.number3]);
-        app.ask(_i18n("UPDATE_ANSWER"), _noInputGame());
-    };
-
-    const hearHintNo = (app) => {
-        app.setContext(HEAR_HINT_CONTEXT, 0);
-        app.ask(_i18n("HEAR_HINT_NO"), _noInputGame());
-    };
-
-    const hearHintUnknown = (app) => {
-        app.setContext(HEAR_HINT_CONTEXT, 0);
-        app.ask(_i18n("INPUT_UNKNOWN_GAME"), _noInputGame());
-    };
-
-    let actionMap = new Map();
-    actionMap.set(INPUT_WELCOME_ACTION, inputWelcome);
-    actionMap.set(INPUT_NUMBERS_ACTION, inputNumbers);
-    actionMap.set(PLAY_AGAIN_YES_ACTION, playAgainYes);
-    actionMap.set(PLAY_AGAIN_NO_ACTION, playAgainNo);
-    actionMap.set(QUIT_ACTION, quit);
-    actionMap.set(INPUT_UNKNOWN_GAME_ACTION, inputUnknownGame);
-    actionMap.set(INPUT_UNKNOWN_PLAY_AGAIN_ACTION, inputUnknownPlayAgain);
-    actionMap.set(HELP_RULE_ACTION, helpRule);
-    actionMap.set(HELP_HINT_ACTION, helpHint);
-    actionMap.set(UPDATE_ANSWER_ACTION, updateAnswer);
-    actionMap.set(HEAR_HINT_YES_ACTION, helpHint);
-    actionMap.set(HEAR_HINT_NO_ACTION, hearHintNo);
-    actionMap.set(HEAR_HINT_NUMBERS_ACTION, inputNumbers);
-    actionMap.set(HEAR_HINT_UNKNOWN_ACTION, hearHintUnknown);
-
-    app.handleRequest(actionMap);
+    } else {
+        conv.contexts.set(GAME_CONTEXT, 1);
+        conv.ask(_i18n("INVALID_NUMBER"));
+    }
 });
+
+app.intent("play_again_yes - context: play_again", conv => {
+    _setupLocale(conv);
+    _initializeGame(conv);
+    conv.ask(_i18n("PLAY_AGAIN_YES"));
+});
+
+app.intent("play_again_no - context: play_again", conv => {
+    _setupLocale(conv);
+    conv.close(_i18n("PLAY_AGAIN_NO"));
+});
+
+app.intent("quit - context: game", conv => {
+    _setupLocale(conv);
+    const answer = conv.data.answer;
+    conv.close(_i18n("QUIT", ...answer));
+});
+
+app.intent("input_unknown - context: game", conv => {
+    _setupLocale(conv);
+    conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
+});
+
+app.intent("input_unknown - context: play_again", conv => {
+    _setupLocale(conv);
+    conv.ask(_i18n("INPUT_UNKNOWN_PLAY_AGAIN"));
+});
+
+app.intent("help_rule - context: game", conv => {
+    _setupLocale(conv);
+    conv.ask(_i18n("RULE"));
+});
+
+app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], conv => {
+    _setupLocale(conv);
+    const data = conv.data;
+    const answer = data.answer;
+    const hint = data.hint;
+    data.hint = hint + 1;
+    if (4 <= data.hint) {
+        data.hint = 0;
+    }
+    if (hint === 0) {
+        const sum = answer[0] + answer[1] + answer[2];
+        conv.ask(_i18n("HINT1", sum));
+    } else {
+        const hintIndexes = data.hintIndexes;
+        const n = answer[hintIndexes[hint - 1]];
+        conv.ask(_i18n("HINT2", n));
+    }
+    conv.contexts.delete(HEAR_HINT_CONTEXT);
+});
+
+app.intent("update_answer - context: game", (conv, { number1 }) => {
+    _setupLocale(conv);
+    const numbers = _parseNumbers(_treatNumber(number1), null, null);
+    _initializeGameWithAnswer(conv, [numbers.number1, numbers.number2, numbers.number3]);
+    conv.ask(_i18n("UPDATE_ANSWER"));
+});
+
+app.intent("hear_hint_no - context: hear_hint", conv => {
+    _setupLocale(conv);
+    conv.contexts.delete(HEAR_HINT_CONTEXT);
+    conv.ask(_i18n("HEAR_HINT_NO"));
+});
+
+app.intent("hear_hint_unknown - context: hear_hint", conv => {
+    _setupLocale(conv);
+    conv.contexts.delete(HEAR_HINT_CONTEXT);
+    conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
+});
+
+exports.hitAndBlow = functions.https.onRequest(app);
