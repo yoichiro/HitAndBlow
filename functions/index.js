@@ -154,14 +154,6 @@ const _initializeGameWithAnswer = (conv, answer) => {
     _clearHint(data);
 };
 
-const _noInputGame = () => {
-    return i18n.__("NO_INPUT_GAME");
-};
-
-const _noInputPlayAgain = () => {
-    return i18n.__("NO_INPUT_PLAY_AGAIN");
-};
-
 const _treatNumber = n => {
     if (n == null) {
         return null;
@@ -295,6 +287,18 @@ app.intent("hear_hint_unknown - context: hear_hint", conv => {
     _setupLocale(conv);
     conv.contexts.delete(HEAR_HINT_CONTEXT);
     conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
+});
+
+app.intent("no_input - context: game", conv => {
+    _setupLocale(conv);
+    conv.contexts.set(GAME_CONTEXT, 1);
+    conv.ask(_i18n("NO_INPUT_GAME"));
+});
+
+app.intent("no_input - context: play_again", conv => {
+    _setupLocale(conv);
+    conv.contexts.set(PLAY_AGAIN_CONTEXT, 1);
+    conv.ask(_i18n("NO_INPUT_PLAY_AGAIN"));
 });
 
 exports.hitAndBlow = functions.https.onRequest(app);
