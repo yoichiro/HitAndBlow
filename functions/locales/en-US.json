@@ -1,7 +1,7 @@
 {
   "WELCOME": [
-    "Welcome to Bulls and Cows. This is a game to guess three digit numbers which are different. Let' start. Please say three digit numbers.",
-    "Let's play Bulls and Cows. This is a game to guess three digit numbers which are different. Ok, please say three digit numbers."
+    "Welcome to Bulls and Cows. This is a game to guess three digit numbers which are different. You can ask the rule of this game. Let' start. Please say three digit numbers.",
+    "Let's play Bulls and Cows. This is a game to guess three digit numbers which are different. You can ask the rule of this game. Ok, please say three digit numbers."
   ],
   "QUIT": [
     "The answer was %s, %s and %s. See you next time.",
