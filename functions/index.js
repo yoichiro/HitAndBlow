@@ -4,6 +4,7 @@ const { dialogflow } = require("actions-on-google");
 const functions = require("firebase-functions");
 const i18n = require("i18n");
 const { sprintf } = require('sprintf-js');
+const assistantAnalytics = require('./assistant-analytics');
 
 const GAME_CONTEXT = "game";
 const PLAY_AGAIN_CONTEXT = "play_again";
@@ -172,6 +173,7 @@ app.intent("input_welcome", conv => {
     _setupLocale(conv);
     _initializeGame(conv);
     conv.ask(_i18n("WELCOME"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_hint"], (conv, { number1, number2, number3 }) => {
@@ -216,38 +218,45 @@ app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_
         conv.contexts.set(GAME_CONTEXT, 1);
         conv.ask(_i18n("INVALID_NUMBER"));
     }
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("play_again_yes - context: play_again", conv => {
     _setupLocale(conv);
     _initializeGame(conv);
     conv.ask(_i18n("PLAY_AGAIN_YES"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("play_again_no - context: play_again", conv => {
     _setupLocale(conv);
     conv.close(_i18n("PLAY_AGAIN_NO"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("quit - context: game", conv => {
     _setupLocale(conv);
     const answer = conv.data.answer;
     conv.close(_i18n("QUIT", ...answer));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("input_unknown - context: game", conv => {
     _setupLocale(conv);
     conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("input_unknown - context: play_again", conv => {
     _setupLocale(conv);
     conv.ask(_i18n("INPUT_UNKNOWN_PLAY_AGAIN"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("help_rule - context: game", conv => {
     _setupLocale(conv);
     conv.ask(_i18n("RULE"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], conv => {
@@ -268,6 +277,7 @@ app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], 
         conv.ask(_i18n("HINT2", n));
     }
     conv.contexts.delete(HEAR_HINT_CONTEXT);
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("update_answer - context: game", (conv, { number1 }) => {
@@ -275,30 +285,35 @@ app.intent("update_answer - context: game", (conv, { number1 }) => {
     const numbers = _parseNumbers(_treatNumber(number1), null, null);
     _initializeGameWithAnswer(conv, [numbers.number1, numbers.number2, numbers.number3]);
     conv.ask(_i18n("UPDATE_ANSWER"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("hear_hint_no - context: hear_hint", conv => {
     _setupLocale(conv);
     conv.contexts.delete(HEAR_HINT_CONTEXT);
     conv.ask(_i18n("HEAR_HINT_NO"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("hear_hint_unknown - context: hear_hint", conv => {
     _setupLocale(conv);
     conv.contexts.delete(HEAR_HINT_CONTEXT);
     conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("no_input - context: game", conv => {
     _setupLocale(conv);
     conv.contexts.set(GAME_CONTEXT, 1);
     conv.ask(_i18n("NO_INPUT_GAME"));
+    assistantAnalytics.trace(conv);
 });
 
 app.intent("no_input - context: play_again", conv => {
     _setupLocale(conv);
     conv.contexts.set(PLAY_AGAIN_CONTEXT, 1);
     conv.ask(_i18n("NO_INPUT_PLAY_AGAIN"));
+    assistantAnalytics.trace(conv);
 });
 
 exports.hitAndBlow = functions.https.onRequest(app);
