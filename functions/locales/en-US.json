@@ -34,6 +34,11 @@
     "%s Bulls, %s Cows.",
     "%s Bulls and %s Cows."
   ],
+  "NEXT": [
+    "Please say three digit numbers.",
+    "What are other numbers?",
+    "Give me three digit numbers."
+  ],
   "ALMOST": [
     "The goal is close.",
     "The numbers are almost correct.",

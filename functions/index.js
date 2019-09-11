@@ -197,11 +197,11 @@ app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_
         } else {
             let hitAndBlow = _i18n("HIT_AND_BLOW", result.hit, result.blow);
             if (result.hit + result.blow === 3) {
-                hitAndBlow += _i18n("ALMOST");
+                hitAndBlow += _i18n("ALMOST") + _i18n("NEXT");
                 conv.contexts.set(GAME_CONTEXT, 1);
                 conv.ask(hitAndBlow);
             } else if (result.hit + result.blow === 0) {
-                hitAndBlow += _i18n("NOTHING");
+                hitAndBlow += _i18n("NOTHING") + _i18n("NEXT");
                 conv.contexts.set(GAME_CONTEXT, 1);
                 conv.ask(hitAndBlow);
             } else {
@@ -215,7 +215,7 @@ app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_
                     conv.ask(hitAndBlow);
                 } else {
                     conv.contexts.set(GAME_CONTEXT, 1);
-                    conv.ask(hitAndBlow);
+                    conv.ask(hitAndBlow + _i18n("NEXT"));
                 }
             }
         }
@@ -275,11 +275,11 @@ app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], 
     }
     if (hint === 0) {
         const sum = answer[0] + answer[1] + answer[2];
-        conv.ask(_i18n("HINT1", sum));
+        conv.ask(_i18n("HINT1", sum) + _i18n("NEXT"));
     } else {
         const hintIndexes = data.hintIndexes;
         const n = answer[hintIndexes[hint - 1]];
-        conv.ask(_i18n("HINT2", n));
+        conv.ask(_i18n("HINT2", n) + _i18n("NEXT"));
     }
     conv.contexts.delete(HEAR_HINT_CONTEXT);
     analytics.trace(conv);
