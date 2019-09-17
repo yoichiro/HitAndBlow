@@ -174,14 +174,14 @@ const _treatNumber = n => {
     }
 };
 
-app.intent("input_welcome", conv => {
+app.intent("input_welcome", async (conv) => {
     _setupLocale(conv);
     _initializeGame(conv);
     conv.ask(_i18n("WELCOME"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_hint"], (conv, { number1, number2, number3 }) => {
+app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_hint"], async (conv, { number1, number2, number3 }) => {
     _setupLocale(conv);
     const data = conv.data;
     const answer = data.answer;
@@ -223,48 +223,48 @@ app.intent(["input_numbers - context: game", "hear_hint_numbers - context: hear_
         conv.contexts.set(GAME_CONTEXT, 1);
         conv.ask(_i18n("INVALID_NUMBER"));
     }
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("play_again_yes - context: play_again", conv => {
+app.intent("play_again_yes - context: play_again", async (conv) => {
     _setupLocale(conv);
     _initializeGame(conv);
     conv.ask(_i18n("PLAY_AGAIN_YES"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("play_again_no - context: play_again", conv => {
+app.intent("play_again_no - context: play_again", async (conv) => {
     _setupLocale(conv);
     conv.close(_i18n("PLAY_AGAIN_NO"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("quit - context: game", conv => {
+app.intent("quit - context: game", async (conv) => {
     _setupLocale(conv);
     const answer = conv.data.answer;
     conv.close(_i18n("QUIT", ...answer));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("input_unknown - context: game", conv => {
+app.intent("input_unknown - context: game", async (conv) => {
     _setupLocale(conv);
     conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("input_unknown - context: play_again", conv => {
+app.intent("input_unknown - context: play_again", async (conv) => {
     _setupLocale(conv);
     conv.ask(_i18n("INPUT_UNKNOWN_PLAY_AGAIN"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("help_rule - context: game", conv => {
+app.intent("help_rule - context: game", async (conv) => {
     _setupLocale(conv);
     conv.ask(_i18n("RULE"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], conv => {
+app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], async (conv) => {
     _setupLocale(conv);
     const data = conv.data;
     const answer = data.answer;
@@ -282,43 +282,43 @@ app.intent(["help_hint - context: game", "hear_hint_yes - context: hear_hint"], 
         conv.ask(_i18n("HINT2", n) + _i18n("NEXT"));
     }
     conv.contexts.delete(HEAR_HINT_CONTEXT);
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("update_answer - context: game", (conv, { number1 }) => {
+app.intent("update_answer - context: game", async (conv, { number1 }) => {
     _setupLocale(conv);
     const numbers = _parseNumbers(_treatNumber(number1), null, null);
     _initializeGameWithAnswer(conv, [numbers.number1, numbers.number2, numbers.number3]);
     conv.ask(_i18n("UPDATE_ANSWER"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("hear_hint_no - context: hear_hint", conv => {
+app.intent("hear_hint_no - context: hear_hint", async (conv) => {
     _setupLocale(conv);
     conv.contexts.delete(HEAR_HINT_CONTEXT);
     conv.ask(_i18n("HEAR_HINT_NO"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("hear_hint_unknown - context: hear_hint", conv => {
+app.intent("hear_hint_unknown - context: hear_hint", async (conv) => {
     _setupLocale(conv);
     conv.contexts.delete(HEAR_HINT_CONTEXT);
     conv.ask(_i18n("INPUT_UNKNOWN_GAME"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("no_input - context: game", conv => {
+app.intent("no_input - context: game", async (conv) => {
     _setupLocale(conv);
     conv.contexts.set(GAME_CONTEXT, 1);
     conv.ask(_i18n("NO_INPUT_GAME"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
-app.intent("no_input - context: play_again", conv => {
+app.intent("no_input - context: play_again", async (conv) => {
     _setupLocale(conv);
     conv.contexts.set(PLAY_AGAIN_CONTEXT, 1);
     conv.ask(_i18n("NO_INPUT_PLAY_AGAIN"));
-    analytics.trace(conv);
+    await analytics.trace(conv);
 });
 
 exports.hitAndBlow = functions.https.onRequest(app);
