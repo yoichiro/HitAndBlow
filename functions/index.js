@@ -15,7 +15,7 @@ const analytics = new ConversationAnalytics({
     token: `${functions.config().analytics.token}`
 });
 
-const app = dialogflow({ debug: true });
+const app = dialogflow();
 
 i18n.configure({
     locales: ["en-US", "ja-JP"],
