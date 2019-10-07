@@ -12,7 +12,8 @@ const HEAR_HINT_CONTEXT = "hear_hint";
 
 const analytics = new ConversationAnalytics({
     assistantType: AssistantType.ACTIONS_ON_GOOGLE,
-    token: `${functions.config().analytics.token}`
+    token: `${functions.config().analytics.token}`,
+    userId: true
 });
 
 const app = dialogflow();
